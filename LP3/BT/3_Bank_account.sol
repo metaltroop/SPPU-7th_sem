@@ -36,19 +36,23 @@ contract Bank {
         return "Amount deposited successfully";
     }
 
-    // Function to withdraw money from the user's account.
-    function withdraw(uint amount) public returns(string memory) {
+   // Function to withdraw money from the user's account in Ether.
+    function withdraw(uint amountInEther) public returns(string memory) {
         // Check if the user has created an account
         require(user_exist[msg.sender] == true, "Account not created!");
         // Ensure the withdrawal amount is greater than 0
-        require(amount > 0, "Withdraw amount must be greater than 0.");
-        // Ensure the user has enough balance to withdraw
-        require(user_account[msg.sender] >= amount, "Insufficient balance.");
+        require(amountInEther > 0, "Withdraw amount must be greater than 0.");
+        
+        // Convert the input amount from Ether to Wei
+        uint amountInWei = amountInEther * 1 ether;
+        
+        // Ensure the user has enough balance to withdraw in Wei
+        require(user_account[msg.sender] >= amountInWei, "Insufficient balance.");
         
         // Deduct the withdrawal amount from the user's balance
-        user_account[msg.sender] -= amount;
-        // Transfer the specified amount to the user
-        payable(msg.sender).transfer(amount);
+        user_account[msg.sender] -= amountInWei;
+        // Transfer the specified amount in Wei to the user
+        payable(msg.sender).transfer(amountInWei);
         
         return "Amount withdrawn successfully";    
     }
